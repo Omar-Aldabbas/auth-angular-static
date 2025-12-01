@@ -1,4 +1,4 @@
-import { Directive, Input } from '@angular/core';
+import { Directive, ElementRef, inject, Input } from '@angular/core';
 
 @Directive({
   selector: 'a[appSafeLink]',
@@ -10,17 +10,20 @@ import { Directive, Input } from '@angular/core';
 export class SafeLinkDirective {
   @Input({ required: true, alias: 'appSafeLink' }) queryParam: string = 'myapp';
 
-  constructor() {
-    console.log('Safe link directive is on');
-  }
+  //   private hostElRef = inject<ElementRef<HTMLAnchorElement>>(ElementRef)
+  constructor(private hostElRef: ElementRef<HTMLAnchorElement>) {}
 
   onConfirmLeavePage(event: MouseEvent) {
     const wantsToLeave = window.confirm('Do you want to leave the app');
 
     if (wantsToLeave) {
-      const address = (event.target as HTMLAnchorElement).href;
-      (event.target as HTMLAnchorElement).href =
-        address + '?from=' + this.queryParam;
+      //   const address = (event.target as HTMLAnchorElement).href;
+      //   (event.target as HTMLAnchorElement).href =
+      //     address + '?from=' + this.queryParam;
+      //   return;
+      const address = this.hostElRef.nativeElement.href;
+
+      this.hostElRef.nativeElement.href = address + '?from=' + this.queryParam;
       return;
     }
 
